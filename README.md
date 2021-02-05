@@ -11,6 +11,7 @@ USTH ICT 2021 Distributed Systems
 Group Info
 =======================
 
-* Name 1 (ID1)
-* Name 2 (ID2)
+* Vũ Đinh Anh BI9-037
+* Nguyễn Lan Hương BI9-114
+* Nguyễn Hồng Quang BI9-194
 
