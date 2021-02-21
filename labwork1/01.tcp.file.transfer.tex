@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usemintedstyle{colorful}
+
+\title{Practical Work 1: TCP File transfer}
+\author{Vu Dinh Anh}
+\date{February 2021}
+
+\begin{document}
+
+\maketitle
+
+I failed to modify provided chat system but I succeed in transferring file with TCP.
+
+\section*{File transfer system}
+
+Files: \mintinline{text}{ft_client.txt}, \mintinline{text}{ft_server.txt}
+
+\subsection*{Protocol}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{DS_labwork1.png}
+    \caption{Protocol}
+    \label{fig:protocol}
+\end{figure}
+
+\subsection*{System}
+
+\begin{minted}{text}
++--------+
+| Client |
++---+----+
+    |
+    | TCP/IP
+    |
+    v
++---+----+
+| Server |
++--------+
+
+\end{minted}
+
+The server only listen to one client. The client send data as chunks to the server. After receiving a chunk, the server writes to a file. After finishing writing the file, the server closes itself.
+
+\subsection*{Implementation}
+In \mintinline{text}{ft_client.c}, the function to send file is implemented as followed
+\begin{minted}{c}
+void send_file(FILE *fp, int sockfd)
+{
+    char data[SIZE] = {0};
+
+    while(fgets(data, SIZE, fp) != NULL) 
+    {
+        if (send(sockfd, data, sizeof(data), 0) == -1) 
+        {
+            perror("Error in sending file.");
+            exit(1);
+        }
+        bzero(data, SIZE);
+    }
+}
+\end{minted}
+
+In \mintinline{text}{ft_server.c}, the function to write file is implemented as followed
+\begin{minted}{c}
+void write_file(int sockfd)
+{
+    int n;
+    FILE *fp;
+    char *filename = "recv_guid_lists.txt";
+    char buffer[SIZE];
+
+    fp = fopen(filename, "w");
+    while (1) 
+    {
+        n = recv(sockfd, buffer, SIZE, 0);
+        if (n <= 0)
+        {
+            break;
+            return; // End the function before writing null to the file
+        }
+        fprintf(fp, "%s", buffer);
+        bzero(buffer, SIZE);
+    }
+}
+\end{minted}
+
+\end{document}

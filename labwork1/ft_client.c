@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+#define SIZE 2048
+
+void send_file(FILE *fp, int sockfd)
+{
+    char data[SIZE] = {0};
+
+    while(fgets(data, SIZE, fp) != NULL) 
+    {
+        if (send(sockfd, data, sizeof(data), 0) == -1) 
+        {
+            perror("Error in sending file.");
+            exit(1);
+        }
+        bzero(data, SIZE);
+    }
+}
+
+int main()
+{
+    // Server ip and port
+    char *ip = "127.0.0.1";
+    int port = 8080;
+
+    // Create socket
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd < 0) 
+    {
+        perror("Error in socket");
+        exit(1);
+    }
+    printf("Server socket created successfully.\n");
+
+    // Add server info
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = port;
+    server_addr.sin_addr.s_addr = inet_addr(ip);
+
+    // Connect to server
+    int e = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+    if(e == -1) 
+    {
+        perror("Error in socket");
+        exit(1);
+    }
+    printf("Connected to Server.\n");
+
+    // Open the file
+    FILE *fp;
+    char *filename = "guid_lists.txt";
+    fp = fopen(filename, "r");
+    if (fp == NULL) 
+    {
+        perror("[-]Error in reading file.");
+        exit(1);
+    }
+
+    // Send the file
+    send_file(fp, sockfd);
+    printf("File data sent successfully.\n");
+
+    // Close socket
+    printf("Closing the connection.\n");
+    close(sockfd);
+
+    return 0;
+}
