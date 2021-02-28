@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usemintedstyle{colorful}
+
+\title{Practical Work 4: Word Count}
+\author{Vu Dinh Anh}
+\date{February 2021}
+
+\begin{document}
+
+\maketitle
+
+\section*{Word Count}
+
+Files: \mintinline{text}{vc.py}, \mintinline{text}{poem.txt}
+
+Usage: \mintinline{text}{python vc.py poem.txt}
+
+Expected output:
+\begin{minted}{text}
+[('And', 1),
+ ('Roses', 1),
+ ('Sugar', 1),
+ ('Violets', 1),
+ ('are', 3),
+ ('blue', 1),
+ ('is', 1),
+ ('red', 1),
+ ('so', 1),
+ ('sweet', 1),
+ ('you', 1)]
+\end{minted}
+
+\subsection*{Mapping}
+
+\begin{minted}{python}
+def _map(file):
+    word_map = []
+    with open(file, 'r') as f:
+        for line in f:
+            words = line.strip().split()
+            word_map += [(word, 1) for word in words]  
+    return word_map
+\end{minted}
+
+\subsection*{Sorting}
+
+\begin{minted}{python}
+def _sort(word_map):
+    word_map.sort(key = lambda word: word[0])
+    return word_map
+    # A little bit of cheating here
+\end{minted}
+
+\subsection*{Reducing}
+
+\begin{minted}{python}
+def _reduce(word_map):
+    word = None
+    cur_word = None
+    cur_count = 0
+    reduced_word_map = []
+
+    for word, count in word_map:
+        if cur_word == word:
+            cur_count += count
+        else:
+            if cur_word is not None:
+                reduced_word_map += [(cur_word, cur_count)]
+            cur_word = word
+            cur_count = count
+
+    if cur_word == word:
+        reduced_word_map += [(cur_word, cur_count)]
+
+    return reduced_word_map
+\end{minted}
+
+\end{document}
