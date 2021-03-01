@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+
+\title{Practical Labwork 2}
+\author{Nguyen Hong Quang}
+\begin{document}
+
+\maketitle
+
+\section{Files transfer using RPC}
+The practical work is implemented with Python using the library XMLRPC. It's a simple system.
+The client will sent a photo in form of binary data and the server will try to catch and write it down 
+
+\section{Implementation}
+\subsection{Client}
+For the client.py file:
+\begin{minted}{python}
+import xmlrpc.client
+from pathlib import Path
+from xmlrpc.client import Binary 
+
+proxy = xmlrpc.client.ServerProxy("http://localhost:9000/")
+
+with open(Path(__file__).parent/'meme.jpg','rb') as handle:
+    binary_data = xmlrpc.client.Binary(handle.read())
+    proxy.server_receive_file(binary_data)
+\end{minted}
+
+By using 
+\begin{minted}{python}
+  proxy = xmlrpc.client.ServerProxy("http://localhost:9000/")
+\end{minted}
+A connection is created to the localhost at port 9000. The rest of the code is just for locating the photo, and transfering its data.
+\subsection{Server}
+For the server.py file: 
+\begin{minted}{python}
+from xmlrpc.server import SimpleXMLRPCServer
+import os 
+
+server = SimpleXMLRPCServer(('localhost',9000))
+
+def server_receive_file(arg):
+    with open('transfered.jpg', 'wb') as handle: 
+        handle.write(arg.data)
+        return True
+
+print("Server listening at port 9000")
+
+server.register_function(server_receive_file,'server_receive_file')
+server.serve_forever()
+\end{minted}
+First thing first, we created a new server instances at the port 9000 of our localhost. Then the server will listen for the signal of the client and write the file down using the already defined function. 
+\end{document}
