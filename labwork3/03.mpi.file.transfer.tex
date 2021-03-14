@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usemintedstyle{colorful}
+
+\title{Practical Work 3: MPI File Transfer}
+\author{Vu Dinh Anh}
+\date{March 2021}
+
+\begin{document}
+
+\maketitle
+
+\section*{Implementation}
+
+Files: \mintinline{text}{lima_transfero.py}
+
+Environment: default python3 on Ubuntu 20.04
+
+Usage: \mintinline{bash}{mpirun -n 4 python3 lima_trasfero.py}
+
+\begin{minted}{python}
+import mpi4py.MPI as MPI
+
+if __name__ == '__main__':
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+
+    if rank == 0:
+        filepath = 'init/secured_document.txt'
+        with open(filepath, 'rb') as file:
+            data = file.read()
+            comm.send(data, dest=1, tag=42)
+    elif rank == 1:
+        data = comm.recv(source=0, tag=42)
+        filepath = 'dest/secured_document.txt'
+        with open(filepath, 'wb') as file:
+            file.write(data)
+\end{minted}
+
+\end{document}
