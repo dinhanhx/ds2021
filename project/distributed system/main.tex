@@ -1,0 +1,70 @@
+\documentclass{report}
+\usepackage{import}
+\usepackage{dependencies}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[backend=biber,
+style=ieee,
+citestyle=ieee]{biblatex}
+
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usemintedstyle{colorful}
+
+
+\addbibresource{references.bib}
+\graphicspath{ {./images/} }
+
+\begin{document}
+
+\begin{titlepage}
+    \title{
+        \Large\MakeUppercase{distributed system final report} \\
+        \Huge{\textbf{Remote shell with MPI}} \\
+        %% \LARGE{} \\
+        {\includegraphics[width=0.4\textwidth]{images/logo.png}}
+    }
+    \author{Group 5 - ICT \\
+        University of Science and Technology of Hanoi\\
+        \\
+        
+        \selectlanguage{vietnamese}
+    \begin{center}
+                \begin{tabular}{l c}
+                    Vũ Đinh Anh & BI9 - 037 \\ [1ex]
+                    Nguyễn Lan Hương & BI9 - 114 \\ [1ex]
+                    Nguyễn Hồng Quang & BI9 - 194 \\
+                \end{tabular}
+            \end{center}
+            
+            }
+    \date{March 2021}
+\end{titlepage}
+
+\maketitle
+
+% \selectlanguage{english}
+
+\newpage
+\tableofcontents
+\newpage
+
+\chapter{Introduction}
+\import{sections/chapter1/}{definitions}
+\import{sections/chapter1/}{objective}
+
+\chapter{Method}
+
+\import{sections/chapter2/}{environment}
+\import{sections/chapter2/}{security}
+\import{sections/chapter2/}{mpi}
+
+\section{Conclusion}
+
+Although the program that we built is extremely simple, it is still able to illustrate the basic essence of a remote shell MPI between a client and a server. Another advantage of it is that it also incorporated a simple secure system, which is the RSA scheme.
+
+However, we still have not developed to evaluate the performance of the system or taken into consideration problems such as data loss during transmission or incapacity to deal with a large number of requests and so on.
+
+\printbibliography
+
+\end{document}
